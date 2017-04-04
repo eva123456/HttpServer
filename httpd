@@ -1,0 +1,2 @@
+#!/bin/bash
+cd src/main/java && make jar && java -jar highload.jar $@
