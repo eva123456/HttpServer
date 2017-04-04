@@ -24,6 +24,7 @@ public class HttpServer {
             Socket socket = serverSocket.accept();
             new Thread(new SocketTask(socket)).start();
         }
+
     }
 
     private static class SocketTask implements Runnable{

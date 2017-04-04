@@ -60,12 +60,12 @@ public class MyResponse {
     private String buildHeaders(String status){
         String headers = "HTTP/1.1 " + status + "\r\n" +
                 "Date: " + (new Date()).toString() + "\r\n"+
-                "Server: sources.HttpServer\r\n";
+                "Server: HttpServer\r\n";
         if(!status.equals(success)){
             headers += "Connection: close\r\n\r\n";
         }else {
             headers += "Content-Type: " + getContentType(path)+"\r\n" +
-                    "Content-Length: " + fileStorage.getContentLength(path) + "\r\n" +
+                    "Content-Length: " + fileStorage.getContentLength() + "\r\n" +
                     "Connection: close\r\n\r\n";
         }
         return headers;
@@ -82,12 +82,12 @@ public class MyResponse {
 
     private String getStatus(String path){
         if(badRequest){
-            return "400 Bad sources.MyRequest";
+            return "400 Bad Request";
         }
-        if(!fileStorage.fileExist()){
+        if(fileStorage.notfound){
             return "404 Not Found";
         }
-        if(!fileStorage.accessAllowed()){
+        if(fileStorage.forbidden){
             return "403 Forbidden";
         }
         return success;

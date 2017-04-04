@@ -9,14 +9,18 @@ import java.nio.file.Paths;
  */
 public class FileStorage {
 
-    private static String DOCUMENT_ROOT = "/home/eva/highload/DOCUMENT_ROOT";
+    public static String DOCUMENT_ROOT = "/home/eva/highload/DOCUMENT_ROOT";
     private static final String INDEX = "/index.html";
     private File currentFile;
     private boolean isDirectory;
+    public static boolean forbidden;
+    public static boolean notfound;
 
     FileStorage(String path){
         DOCUMENT_ROOT = "/home/eva/highload/DOCUMENT_ROOT";
         isDirectory = false;
+        forbidden = (path.indexOf("../") != -1);
+        notfound = false;
         initFile(path);
     }
 
@@ -30,6 +34,8 @@ public class FileStorage {
             currentFile = new File(sb.toString());
             isDirectory = true;
         }
+        forbidden = forbidden || (isDirectory() && !fileExist()) || !accessAllowed();
+        notfound = (!isDirectory() && !fileExist());
     }
 
     //get file and send it out
@@ -42,11 +48,8 @@ public class FileStorage {
         }
     }
 
-    public long getContentLength(String path){
-        String fullPath = (new StringBuilder()).append(DOCUMENT_ROOT)
-                .append(path).toString();
-        File file = new File(fullPath);
-        return file.length();
+    public long getContentLength(){
+        return currentFile.length();
     }
 
     public boolean isDirectory(){

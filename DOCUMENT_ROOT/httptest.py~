@@ -5,9 +5,9 @@ import socket
 import httplib
 import unittest
 
-class HttpServer(unittest.TestCase):
+class sources.HttpServer(unittest.TestCase):
   host = "localhost"
-  port = 80
+  port = 8080
 
   def setUp(self):
     self.conn = httplib.HTTPConnection(self.host, self.port, timeout=10)
@@ -258,7 +258,7 @@ class HttpServer(unittest.TestCase):
 
 loader = unittest.TestLoader()
 suite = unittest.TestSuite()
-a = loader.loadTestsFromTestCase(HttpServer)
+a = loader.loadTestsFromTestCase(sources.HttpServer)
 suite.addTest(a)
 
 class NewResult(unittest.TextTestResult):
