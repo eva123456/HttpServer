@@ -51,7 +51,7 @@ public class MyResponse {
         String responseHeaders = buildHeaders(status);
         System.out.println(responseHeaders);
         output.write(responseHeaders.getBytes());
-        if (method.equals("GET")&&status.equals(success)) {
+        if ((method != null)&&method.equals("GET")&&status.equals(success)) {
             fileStorage.showFile(output);
         }
         output.flush();

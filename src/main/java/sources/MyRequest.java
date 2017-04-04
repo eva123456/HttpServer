@@ -30,19 +30,16 @@ public class MyRequest {
 
     public String findPath(String request) throws UnsupportedEncodingException {
         String path;
-        System.out.println("MyRequest :: findPath : request = " + request);
         int firstPos = request.indexOf(' ');
         int secondPos = request.indexOf(' ', ++firstPos);
         if((firstPos == -1) || (secondPos == -1))
             return null;
         path = request.substring(firstPos, secondPos);
-        System.out.println("MyRequest :: findPath : path = " + path);
         int queryPos = path.lastIndexOf('?');//if there is a query string
         if(queryPos != -1){
             path = path.substring(0, queryPos);
         }
         path = URLDecoder.decode(path, "UTF-8");//for backspaces
-        System.out.println("MyRequest :: findPath : final path = " + path);
         return path;
     }
 

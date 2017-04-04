@@ -50,7 +50,6 @@ public class MyThread extends Thread {
                         e.printStackTrace();
                     }
                 }
-                System.out.println("Process finished\n");
             }
             HttpServer.setFree(this.id);
         }
