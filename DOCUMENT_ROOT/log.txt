@@ -1,7 +1,7 @@
 directory index file exists ... ok
 document root escaping forbidden ... ok
 Send bad http headers ... ok
-file located in nested folders ... ok
+file located in nested folders ... ERROR
 absent file returns 404 ... ok
 urlencoded filename ... ok
 query string after filename ... ok
@@ -18,9 +18,41 @@ head method support ... ok
 directory index file absent ... ok
 large file downloaded correctly ... ok
 post method forbidden ... ok
-Server header exists ... ok
+Server header exists ... ERROR
+
+======================================================================
+ERROR: file located in nested folders
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./httptest.py", line 61, in test_file_in_nested_folders
+    r = self.conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1089, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 444, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 400, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 476, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
+
+======================================================================
+ERROR: Server header exists
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./httptest.py", line 28, in test_server_header
+    r = self.conn.getresponse()
+  File "/usr/lib/python2.7/httplib.py", line 1089, in getresponse
+    response.begin()
+  File "/usr/lib/python2.7/httplib.py", line 444, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python2.7/httplib.py", line 400, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "/usr/lib/python2.7/socket.py", line 476, in readline
+    data = self._sock.recv(self._rbufsize)
+timeout: timed out
 
 ----------------------------------------------------------------------
-Ran 21 tests in 0.067s
+Ran 21 tests in 20.200s
 
-OK
+FAILED (errors=2)

@@ -2,7 +2,7 @@ JAVAC = javac
 JAR = jar
 JARFLAGS = cvfm
 MANIFEST = MANIFEST
-SOURCES = sources/HttpServer.java sources/MyResponse.java sources/MyRequest.java sources/FileStorage.java
+SOURCES = sources/HttpServer.java sources/MyThread.java sources/MyResponse.java sources/MyRequest.java sources/FileStorage.java
 
 all: highload
 

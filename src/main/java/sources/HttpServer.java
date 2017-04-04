@@ -18,7 +18,7 @@ public class HttpServer {
     private static int NCPU;
     private static String ROOTDIR;
     private static HashMap<String, Object> params = new HashMap<>(3);
-    private static HashMap<Integer, Thread> threads = new HashMap<>();
+    private static ArrayList<MyThread> threads = new ArrayList<MyThread>();
     private static ArrayList<Boolean> freeThreads = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -33,71 +33,40 @@ public class HttpServer {
         ServerSocket serverSocket = new ServerSocket(PORT);
         System.out.println("Server started on port " + PORT);
 
-        for(int i = 0; i < 2*NCPU + 1; ++i){
-            threads.put(i, new Thread());
+        for(int i = 0; i < NCPU; ++i){
+            threads.add(i, new MyThread(i));
             freeThreads.add(i, true);
         }
 
-        int j = 0;
+        int threadID = 0;
         while (true){
             Socket socket = serverSocket.accept();
-            if(freeThreads.get(j)){
+            if(freeThreads.get(threadID)){
                 //get free thread and do the task
-                freeThreads.set(j, false);
+                threads.get(threadID).putTaskIntoQueue(socket);
+                setBusy(threadID);
+            } else {
+                threads.get(threadID).putTaskIntoQueue(socket);
+                ++threadID;
             }
-            ++j;
-            if(j % NCPU == 0){
-                j = 0;
+            if(threadID % NCPU == 0){
+                threadID = 0;
             }
         }
     }
 
-    private static class SocketTask implements Runnable{
+    public static void setFree(int id){
+        freeThreads.set(id, true);
+    }
 
-        private Socket socket;
-        private InputStream input;
-        private OutputStream output;
-
-        SocketTask(Socket socket) throws IOException {
-            this.socket = socket;
-            this.input = socket.getInputStream();
-            this.output = socket.getOutputStream();
-        }
-
-        public void run() {
-            try {
-                readRequests();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println("Process finished\n");
-        }
-
-        private void readRequests() throws IOException {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            StringBuilder sb = new StringBuilder();
-            while (true){
-                String str = reader.readLine();
-                if(str == null || str.trim().length() == 0)
-                    break;
-                sb.append(str);
-            }
-            MyRequest request = new MyRequest(sb.toString());
-            MyResponse response = new MyResponse(request);
-            response.write(output);
-        }
+    public static void setBusy(int id){
+        freeThreads.set(id, false);
     }
 
     private static void fillParams(String[] args){
         params.put("-r", FileStorage.DOCUMENT_ROOT);
-        params.put("-c", null);
-        params.put("-p", 80);
+        params.put("-c", 4);
+        params.put("-p", 8080);
 
         for(int i = 0; i < args.length; i+=2){
             if (params.containsKey(args[i])){
