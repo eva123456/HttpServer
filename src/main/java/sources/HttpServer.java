@@ -14,9 +14,7 @@ import static javafx.application.Platform.exit;
  * Created by eva on 02.04.17.
  */
 public class HttpServer {
-    private static int PORT;
-    private static int NCPU;
-    private static String ROOTDIR;
+    private static Integer NCPU;
     private static HashMap<String, Object> params = new HashMap<>(3);
     private static ArrayList<MyThread> threads = new ArrayList<MyThread>();
     private static ArrayList<Boolean> freeThreads = new ArrayList<>();
@@ -25,9 +23,9 @@ public class HttpServer {
 
         fillParams(args);
 
-        PORT = (Integer) params.get("-p");
+        int PORT = (Integer) params.get("-p");
         NCPU = (Integer) params.get("-c");
-        ROOTDIR = (String) params.get("-r");
+        String ROOTDIR = (String) params.get("-r");
         FileStorage.DOCUMENT_ROOT = ROOTDIR;
 
         ServerSocket serverSocket = new ServerSocket(PORT);
@@ -56,17 +54,21 @@ public class HttpServer {
     }
 
     public static void setFree(int id){
+        if(id >= NCPU)
+            return;
         freeThreads.set(id, true);
     }
 
     public static void setBusy(int id){
+        if(id >= NCPU)
+            return;
         freeThreads.set(id, false);
     }
 
     private static void fillParams(String[] args){
         params.put("-r", FileStorage.DOCUMENT_ROOT);
         params.put("-c", 4);
-        params.put("-p", 8080);
+        params.put("-p", 80);
 
         for(int i = 0; i < args.length; i+=2){
             if (params.containsKey(args[i])){
