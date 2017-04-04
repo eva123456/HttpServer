@@ -1,0 +1,15 @@
+#ignore .idea
+.idea/
+
+#ignore classes
+src/main/java/sources/*.class
+
+#ignore jar
+*.jar
+
+*.xml
+*.iml
+*~
+
+#ignore target
+target/
