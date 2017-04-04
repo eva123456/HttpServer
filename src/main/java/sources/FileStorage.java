@@ -17,7 +17,6 @@ public class FileStorage {
     public static boolean notfound;
 
     FileStorage(String path){
-        DOCUMENT_ROOT = "/home/eva/highload/DOCUMENT_ROOT";
         isDirectory = false;
         forbidden = (path.indexOf("../") != -1);
         notfound = false;
