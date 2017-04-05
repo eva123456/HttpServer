@@ -2,6 +2,7 @@ package sources;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -16,9 +17,11 @@ public class MyResponse {
     private static HashMap<String, String > contentTypes;
     private boolean badRequest;
     private static final String success = "200 OK";
+    private String request;
 
 
     public MyResponse(MyRequest request){
+        this.request = request.allReq;
         method = request.getMethod();
         if(!request.methodIsValid(method)){
             badRequest = true;
@@ -52,7 +55,12 @@ public class MyResponse {
         //System.out.println(responseHeaders);
         output.write(responseHeaders.getBytes());
         if ((method != null)&&method.equals("GET")&&status.equals(success)) {
-            fileStorage.showFile(output);
+            try {
+                fileStorage.showFile(output);
+            }catch (SocketException e){
+                System.out.println("Response :: write : request = " + request);
+            }
+
         }
         output.flush();
     }

@@ -10,8 +10,10 @@ public class MyRequest {
 
     private String requestMethod;
     private String filePath;
+    public String allReq;
 
     public MyRequest(String request) throws UnsupportedEncodingException {
+        allReq = request;
         this.requestMethod = findMethod(request);
         this.filePath = findPath(request);
     }
