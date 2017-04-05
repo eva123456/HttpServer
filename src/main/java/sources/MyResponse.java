@@ -49,7 +49,7 @@ public class MyResponse {
     public void write(OutputStream output) throws IOException {
         String status = getStatus(path);
         String responseHeaders = buildHeaders(status);
-        System.out.println(responseHeaders);
+        //System.out.println(responseHeaders);
         output.write(responseHeaders.getBytes());
         if ((method != null)&&method.equals("GET")&&status.equals(success)) {
             fileStorage.showFile(output);
