@@ -13,9 +13,12 @@ public class MyThread extends Thread {
     private Socket socket;
     private InputStream input;
     private OutputStream output;
+    public Object monitor = new Object();
+    public boolean ready;
 
     MyThread(int id) throws IOException {
         this.id = id;
+        ready = false;
         start();
     }
 
@@ -31,27 +34,37 @@ public class MyThread extends Thread {
 
     @Override
     public void run() {
-        while (true){
-            while (!taskQueue.isEmpty()){
-                socket = taskQueue.poll();
-                try {
-                    init(socket);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    readRequests();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }finally {
+        while (true) {
+            synchronized (monitor) {
+                while (!ready) { //thread must wait for the new tasks
                     try {
-                        socket.close();
-                    } catch (IOException e) {
+                        monitor.wait();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                while (!taskQueue.isEmpty()) {
+                    socket = taskQueue.poll();
+                    try {
+                        init(socket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        readRequests();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                HttpServer.setFree(this.id);
+                ready = false;
             }
-            HttpServer.setFree(this.id);
         }
     }
 

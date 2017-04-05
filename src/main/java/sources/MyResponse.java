@@ -59,6 +59,7 @@ public class MyResponse {
                 fileStorage.showFile(output);
             }catch (SocketException e){
                 System.out.println("Response :: write : request = " + request);
+                e.printStackTrace();
             }
 
         }

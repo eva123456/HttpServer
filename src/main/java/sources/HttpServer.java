@@ -34,6 +34,7 @@ public class HttpServer {
         for(int i = 0; i < NCPU; ++i){
             threads.add(i, new MyThread(i));
             freeThreads.add(i, true);
+
         }
 
         int threadID = 0;
@@ -41,8 +42,12 @@ public class HttpServer {
             Socket socket = serverSocket.accept();
             if(freeThreads.get(threadID)){
                 //get free thread and do the task
-                threads.get(threadID).putTaskIntoQueue(socket);
-                setBusy(threadID);
+                synchronized (threads.get(threadID).monitor){
+                    threads.get(threadID).ready = true; //new task is ready for this thread
+                    threads.get(threadID).monitor.notify(); //notify monitor about appeared task
+                    threads.get(threadID).putTaskIntoQueue(socket);
+                    setBusy(threadID);
+                }
             } else {
                 threads.get(threadID).putTaskIntoQueue(socket);
                 ++threadID;
